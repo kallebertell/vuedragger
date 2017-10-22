@@ -1,11 +1,13 @@
 
+$color-blue: #00baf8;
+
 $color-bg-normal: #f7f9f9;
 $color-white-normal: #ffffff;
 $color-text-header: #0f4d62;
 $color-text-normal: #34464c;
 $color-text-subtle: #a5b2b6;
 $color-text-warning: #fa8400;
-$color-text-success: #00baf8;
+$color-text-success: $color-blue;
 
 $color-active: #70ca63;
 $color-disabled: #dbe5e8;
