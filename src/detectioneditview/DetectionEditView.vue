@@ -53,11 +53,7 @@ export default {
   },
 
   created() {
-    fetchDetectionAccountGroups(this.$route.params.id).then((accountGroups) => {
-      accountGroups.push(this.createEmptyGroup());
-      this.accountGroups = accountGroups;
-      this.loading = false;
-    });
+    this.loadAccountGroups();
   },
 
   data() {
@@ -81,6 +77,14 @@ export default {
   },
 
   methods: {
+    loadAccountGroups() {
+      fetchDetectionAccountGroups(this.$route.params.id).then((accountGroups) => {
+        accountGroups.push(this.createEmptyGroup());
+        this.accountGroups = accountGroups;
+        this.loading = false;
+      });
+    },
+
     createEmptyGroup() {
       return {
         id: generateTransientId(),
@@ -119,21 +123,22 @@ export default {
     save() {
       this.saving = true;
 
-      const updateCommand = this.saveCommandQueue.shift();
+      const saveCommand = this.saveCommandQueue.shift();
 
-      if (!updateCommand) {
+      if (!saveCommand) {
         this.saving = false;
         this.success = true;
         setTimeout(() => this.resetNotifications(), 3000);
+        this.loadAccountGroups();
         return;
       }
 
-      updateCommand().then(
+      saveCommand().then(
         () => this.save(),
         () => {
           this.error = true;
           this.saving = false;
-          this.saveCommandQueue.push(updateCommand);
+          this.saveCommandQueue.push(saveCommand);
           setTimeout(() => this.resetNotifications(), 3000);
         },
       );
