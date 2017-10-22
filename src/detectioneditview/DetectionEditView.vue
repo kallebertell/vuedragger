@@ -9,8 +9,16 @@
         <olx-title>Found {{accountAmount}} similar accounts</olx-title>
       </div>
       <div class="rightSection">
-        <div class="notification">Status message</div>
-        <olx-button :onClick="save" disabled>Save Changes</olx-button>
+        <div v-if="success" class="notification success">
+          Changes saved 👍
+        </div>
+        <div v-if="error" class="notification warning">
+          Something went wrong… please try again
+        </div>
+        <olx-button :onClick="save" :disabled="!dirty || saving">
+          <span v-if="saving">Saving..</span>
+          <span v-if="!saving">Save Changes</span>
+        </olx-button>
       </div>
     </header>
     <transition-group name="list" tag="p">
@@ -25,8 +33,7 @@
 </template>
 
 <script>
-import { isTransient, generateTransientId } from '@/utils/idTool';
-import { fetchAccountGroups } from '@/api';
+import { fetchDetectionAccountGroups, createAccountGroup, moveAccount, isTransient, isTransientId, generateTransientId } from '@/api';
 import { Container, Spinner, OlxButton, OlxTitle } from '@/components';
 
 import AccountGroupContainer from './AccountGroupContainer';
@@ -35,7 +42,7 @@ const hasAccounts = group => group.accounts.length > 0;
 const hasNoAccounts = group => !hasAccounts(group);
 
 export default {
-  name: 'DetectionView',
+  name: 'DetectionEditView',
 
   components: {
     Container,
@@ -46,7 +53,7 @@ export default {
   },
 
   created() {
-    fetchAccountGroups(this.$route.params.id).then((accountGroups) => {
+    fetchDetectionAccountGroups(this.$route.params.id).then((accountGroups) => {
       accountGroups.push(this.createEmptyGroup());
       this.accountGroups = accountGroups;
       this.loading = false;
@@ -56,11 +63,18 @@ export default {
   data() {
     return {
       accountGroups: [],
+      saveCommandQueue: [],
       loading: true,
+      saving: false,
+      error: false,
+      success: false,
     };
   },
 
   computed: {
+    dirty() {
+      return this.saveCommandQueue.length > 0;
+    },
     accountAmount() {
       return this.accountGroups.reduce((sum, group) => sum + group.accounts.length, 0);
     },
@@ -76,9 +90,9 @@ export default {
 
     moveAccount({ account, groupId }) {
       const oldGroup = this.accountGroups.find(
-        group => group.accounts.find(acc => acc.email === account.email),
+        group => group.accounts.find(acc => acc.id === account.id),
       );
-      oldGroup.accounts = oldGroup.accounts.filter(acc => acc.email !== account.email);
+      oldGroup.accounts = oldGroup.accounts.filter(acc => acc.id !== account.id);
 
       if (isTransient(oldGroup) && hasNoAccounts(oldGroup)) {
         this.accountGroups =
@@ -92,10 +106,42 @@ export default {
       if (hasAccounts(lastGroup) || !isTransient(lastGroup)) {
         this.accountGroups.push(this.createEmptyGroup());
       }
+
+      // Below we enqueue api calls needed to be made to bring the backend
+      // state up to par with the frontend.
+      if (isTransientId(groupId)) {
+        this.saveCommandQueue.push(() => createAccountGroup(this.$route.params.id, groupId));
+      }
+
+      this.saveCommandQueue.push(() => moveAccount(account.id, groupId));
     },
 
     save() {
-      console.log('saving');
+      this.saving = true;
+
+      const updateCommand = this.saveCommandQueue.shift();
+
+      if (!updateCommand) {
+        this.saving = false;
+        this.success = true;
+        setTimeout(() => this.resetNotifications(), 3000);
+        return;
+      }
+
+      updateCommand().then(
+        () => this.save(),
+        () => {
+          this.error = true;
+          this.saving = false;
+          this.saveCommandQueue.push(updateCommand);
+          setTimeout(() => this.resetNotifications(), 3000);
+        },
+      );
+    },
+
+    resetNotifications() {
+      this.success = false;
+      this.error = false;
     },
 
     goBack() {
@@ -119,6 +165,15 @@ export default {
   .leftSection, .rightSection {
     display: flex;
     align-items: center;
+  }
+}
+
+.notification {
+  font-size: $font-size-smaller;
+  margin-right: 1.6rem;
+
+  .warning {
+    color: $color-text-warning;
   }
 }
 

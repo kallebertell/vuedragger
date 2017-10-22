@@ -1,8 +1,10 @@
 
+export function isTransientId(id) {
+  return id && id.startsWith && id.startsWith('new');
+}
+
 export function isTransient(resource) {
-  return resource.id
-    && resource.id.startsWith
-    && resource.id.startsWith('new');
+  return isTransientId(resource.id);
 }
 
 export function generateTransientId() {

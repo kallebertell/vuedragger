@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { isTransient } from '@/utils/idTool';
+import { isTransient } from '@/api';
 import AccountCard from './AccountCard';
 
 export default {
