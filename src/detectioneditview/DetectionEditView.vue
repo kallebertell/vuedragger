@@ -46,7 +46,7 @@ export default {
   },
 
   created() {
-    fetchAccountGroups().then((accountGroups) => {
+    fetchAccountGroups(this.$route.params.id).then((accountGroups) => {
       accountGroups.push(this.createEmptyGroup());
       this.accountGroups = accountGroups;
       this.loading = false;
@@ -140,14 +140,6 @@ export default {
     position: relative;
     top: 1px;
   }
-}
-
-.topic {
-  margin: 0 0 0 1.6rem;
-  font-size: 2.4rem;
-  font-weight: bold;
-  line-height: 1.33;
-  color: $color-text-header;
 }
 
 .list-enter-active, .list-leave-active {

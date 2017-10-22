@@ -1,9 +1,8 @@
-import accountGroups from './accountGroups.json';
+import axios from 'axios';
+import apiConfig from './apiConfig';
 
-export default function () {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(accountGroups);
-    }, 500);
-  });
+export default function (detectionId) {
+  return axios
+    .get(`${apiConfig.baseUrl}detections/${detectionId}/accountGroups?_embed=accounts`)
+    .then(response => response.data);
 }

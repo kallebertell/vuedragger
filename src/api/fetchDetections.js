@@ -1,9 +1,6 @@
-import detections from './detections.json';
+import axios from 'axios';
+import apiConfig from './apiConfig';
 
 export default function () {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(detections);
-    }, 500);
-  });
+  return axios.get(`${apiConfig.baseUrl}detections/`).then(response => response.data);
 }

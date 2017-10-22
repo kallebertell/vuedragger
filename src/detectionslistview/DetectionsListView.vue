@@ -22,7 +22,7 @@ import { fetchDetections } from '@/api';
 import { Container, Spinner, OlxTitle } from '@/components';
 
 export default {
-  name: 'DetectionView',
+  name: 'DetectionsListView',
 
   components: {
     Container,
