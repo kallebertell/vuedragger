@@ -188,6 +188,7 @@ export default {
   border: none;
   border-radius: 50%;
   padding: 0.8rem;
+  margin-right: 1.6rem;
 
   font: inherit;
   cursor: pointer;

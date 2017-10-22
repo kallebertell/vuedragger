@@ -14,7 +14,7 @@ export default {
 @import '../theme/variables';
 
 .title {
-  margin: 0 0 0 1.6rem;
+  margin: 0;
   font-size: 2.4rem;
   font-weight: bold;
   line-height: 1.33;
