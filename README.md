@@ -45,6 +45,7 @@ scheme (but we don’t have the final design yet).
 > We’d like you to prepare for this in your solution in some way and tell us how you’d extend the codebase with future iterations.
 
 * Maybe not the question asked, but the state management strategy in this application gets unwieldy rather quickly. I'm prone to Redux when doing React so I'd probably look into Vuex pretty quickly. Especially if any two views are sharing data.
+* Also something to handle flow control when we start orchestrating more complex asynchonous actions & side effects (e.g. vuex-saga or whatever is popular in the Vuex community)
 
 > We’d also like you to show or tell us how you would test your implementation.
 
@@ -53,5 +54,7 @@ scheme (but we don’t have the final design yet).
 * Generally in a real app I'd try to extract the interesting logic away from presentational components so I can test that more easily with unit tests without having to involve dom. If using Vuex I'd assume I'd mostly be testing selectors and reducers. For presentational components mostly devoid of logic sort of smoke test should be enough. Jest has snapshot testing for this which are very low-maintenance, not sure if something similar is possible with Vue.
 
 * re-usable components can also be tested in some sort of harness (e.g. styleguide). It's also easier to develop them to be re-usable there.
+
+* side effects (e.g. async api request) are more easily tested when the related behaviour is isolated into their own testable modules (with whatever side effect management library)
 
 * For e2e tests I'd only have a few testing the happy paths of core use cases.
