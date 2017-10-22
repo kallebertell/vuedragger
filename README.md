@@ -49,8 +49,6 @@ scheme (but we don’t have the final design yet).
 
 > We’d also like you to show or tell us how you would test your implementation.
 
-* I seem to have broken the unit test runner at some point but I don't have time to fix it currently. It was working in earlier commits. Now it complains with a cryptic `ReferenceError: Can't find variable: exports` error.
-
 * Generally in a real app I'd try to extract the interesting logic away from presentational components so I can test that more easily with unit tests without having to involve dom. If using Vuex I'd assume I'd mostly be testing selectors and reducers. For presentational components mostly devoid of logic sort of smoke test should be enough. Jest has snapshot testing for this which are very low-maintenance, not sure if something similar is possible with Vue.
 
 * re-usable components can also be tested in some sort of harness (e.g. styleguide). It's also easier to develop them to be re-usable there.
