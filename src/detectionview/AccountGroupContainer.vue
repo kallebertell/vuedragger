@@ -1,14 +1,17 @@
 <template>
   <section>
-    <h2 class="topic" :class="{ 'isNew': isNewGroup }">{{name}}</h2>
+    <div class="header">
+      <h2 class="topic" :class="{ 'isNew': isNewGroup }">{{name}}</h2>
+      <div class="accounts" v-if="accountsCount > 0">{{accountsCount}} accounts</div>
+    </div>
     <ul
-      class="accountGroup"
+      class="group"
       @dragover.prevent
       @drop="drop">
-      <li v-if="group.accounts.length < 1 && isNewGroup">
+      <li v-if="accountsCount < 1 && isNewGroup" class="instruction">
         Drag accounts here...
       </li>
-      <li v-if="group.accounts.length < 1 && !isNewGroup">
+      <li v-if="accountsCount < 1 && !isNewGroup" class="instruction">
         No accounts for this Person. Drag accounts here to add some back.
       </li>
       <account-card
@@ -35,6 +38,9 @@ export default {
   props: ['group'],
 
   computed: {
+    accountsCount() {
+      return this.group.accounts.length;
+    },
     name() {
       if (this.isNewGroupWithAccounts) {
         return 'Unsaved Person';
@@ -65,23 +71,58 @@ export default {
 };
 </script>
 
-<style scoped>
-.accountGroup {
-  background: #f0f0f0;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  padding: 1rem 1rem 0 1rem;
-  min-height: 4rem;
+<style scoped lang="scss">
+@import '../theme/variables';
+
+.header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  margin-bottom: 1.6rem;
 }
 
 .topic {
+  font-size: $font-size-large;
+  font-weight: 600;
+  text-align: left;
+  color: $color-text-header;
+  margin: 0;
 
+  &.isNew {
+    color: $color-text-subtle;
+  }
 }
 
-.topic.isNew {
-  opacity: 0.5;
+.accounts {
+  color: $color-text-subtle;
+  font-size: $font-size-small;
+}
+
+.group {
+  background: $color-bg-well;
+  border-radius: 4px;
+
+  padding: 1.6rem 1.6rem 0 1.6rem;
+  min-height: 8.8rem;
+  margin: 0 0 4rem;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  &.isEmpty {
+    justify-content: center;
+  }
+}
+
+.instruction {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+
+  color: $color-text-subtle;
+  font-size: $font-size-small;
 }
 </style>

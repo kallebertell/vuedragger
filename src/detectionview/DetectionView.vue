@@ -1,5 +1,5 @@
 <template>
-  <div class="detectionView">
+  <container class="detectionView">
     <spinner :loading="loading" />
     <transition-group name="list" tag="p">
       <account-group-container
@@ -9,13 +9,13 @@
         @moveAccount="moveAccount"
       />
     </transition-group>
-  </div>
+  </container>
 </template>
 
 <script>
 import { isTransient, generateTransientId } from '@/utils/idTool';
 import { fetchAccountGroups } from '@/api';
-import Spinner from '@/components/Spinner';
+import { Container, Spinner } from '@/components';
 
 import AccountGroupContainer from './AccountGroupContainer';
 
@@ -26,6 +26,7 @@ export default {
   name: 'DetectionView',
 
   components: {
+    Container,
     AccountGroupContainer,
     Spinner,
   },
@@ -77,7 +78,6 @@ export default {
 </script>
 
 <style>
-
 .list-enter-active, .list-leave-active {
   transition: all 1s;
 }
