@@ -101,6 +101,15 @@ export default {
 
 .details {
   flex-grow: 1;
+  height: 3.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.name {
+  font-weight: 600;
+  font-size: $font-size-small;
 }
 
 .email {
@@ -108,6 +117,7 @@ export default {
   font-size: $font-size-smaller;
   font-weight: 600;
 }
+
 .status {
   width: 6rem;
   height: 2rem;

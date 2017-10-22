@@ -12,14 +12,4 @@ export default {
 
 <style lang="scss">
 @import './theme/global';
-
-.app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-li {
-  list-style-type: none;
-}
 </style>
