@@ -1,5 +1,2 @@
 export { default as fetchAccountGroups } from './fetchAccountGroups';
-
-export const fetchDetections = () => {
-  throw new Error('todo');
-};
+export { default as fetchDetections } from './fetchDetections';

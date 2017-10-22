@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import DetectionView from '@/detectionview';
+import DetectionsListView from '@/detectionslistview';
+import DetectionEditView from '@/detectioneditview';
 
 Vue.use(Router);
 
@@ -8,8 +9,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'detection',
-      component: DetectionView,
+      name: 'detectionsList',
+      component: DetectionsListView,
+    },
+    {
+      path: '/detections/:id',
+      name: 'detectionEdit',
+      component: DetectionEditView,
     },
   ],
 });

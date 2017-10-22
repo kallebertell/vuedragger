@@ -3,10 +3,10 @@
     <spinner :loading="loading" />
     <header v-if="!loading" class="header">
       <div class="leftSection">
-        <button class="backButton">
+        <button class="backButton" @click="goBack">
           <img class="arrow" src="../assets/leftArrow.svg" />
         </button>
-        <h1 class="topic">Found {{accountAmount}} similar accounts</h1>
+        <olx-title>Found {{accountAmount}} similar accounts</olx-title>
       </div>
       <div class="rightSection">
         <div class="notification">Status message</div>
@@ -27,7 +27,7 @@
 <script>
 import { isTransient, generateTransientId } from '@/utils/idTool';
 import { fetchAccountGroups } from '@/api';
-import { Container, Spinner, OlxButton } from '@/components';
+import { Container, Spinner, OlxButton, OlxTitle } from '@/components';
 
 import AccountGroupContainer from './AccountGroupContainer';
 
@@ -42,6 +42,7 @@ export default {
     AccountGroupContainer,
     Spinner,
     OlxButton,
+    OlxTitle,
   },
 
   created() {
@@ -95,6 +96,10 @@ export default {
 
     save() {
       console.log('saving');
+    },
+
+    goBack() {
+      this.$router.go(-1);
     },
   },
 };

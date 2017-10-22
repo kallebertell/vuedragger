@@ -1,9 +1,9 @@
-import accountGroups from './accountGroups.json';
+import detections from './detections.json';
 
 export default function () {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(accountGroups);
+      resolve(detections);
     }, 500);
   });
 }
