@@ -1,12 +1,12 @@
 <template>
   <container class="detectionView">
-    <spinner :loading="loading" />
-    <header v-if="!loading" class="header">
+    <spinner :loading="$store.state.loading" />
+    <header v-if="!$store.state.loading" class="header">
       <div class="leftSection">
         <button class="backButton" @click="goBack">
           <img class="arrow" src="../assets/leftArrow.svg" />
         </button>
-        <olx-title>Found {{accountAmount}} similar accounts</olx-title>
+        <olx-title>Found {{accountAmount}} similar accounts {{$store.state.count}}</olx-title>
       </div>
       <div class="rightSection">
         <div v-if="success" class="notification success">
@@ -23,7 +23,7 @@
     </header>
     <transition-group name="list" tag="p">
       <account-group-container
-        v-for="group in accountGroups"
+        v-for="group in $store.state.accountGroups"
         :key="group.id"
         :group="group"
         @moveAccount="moveAccount"
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import { fetchDetectionAccountGroups, createAccountGroup, moveAccount, isTransient, isTransientId, generateTransientId } from '@/api';
 import { Container, Spinner, OlxButton, OlxTitle } from '@/components';
 
@@ -60,7 +61,6 @@ export default {
     return {
       accountGroups: [],
       saveCommandQueue: [],
-      loading: true,
       saving: false,
       error: false,
       success: false,
@@ -78,11 +78,7 @@ export default {
 
   methods: {
     loadAccountGroups() {
-      fetchDetectionAccountGroups(this.$route.params.id).then((accountGroups) => {
-        accountGroups.push(this.createEmptyGroup());
-        this.accountGroups = accountGroups;
-        this.loading = false;
-      });
+      this.$store.dispatch('loadDetection', this.$route.params.id);
     },
 
     createEmptyGroup() {
@@ -93,22 +89,22 @@ export default {
     },
 
     moveAccount({ account, groupId }) {
-      const oldGroup = this.accountGroups.find(
+      const oldGroup = this.$store.state.accountGroups.find(
         group => group.accounts.find(acc => acc.id === account.id),
       );
       oldGroup.accounts = oldGroup.accounts.filter(acc => acc.id !== account.id);
 
       if (isTransient(oldGroup) && hasNoAccounts(oldGroup)) {
-        this.accountGroups =
-          this.accountGroups.filter(group => group !== oldGroup);
+        this.$store.state.accountGroups =
+          this.$store.state.accountGroups.filter(group => group !== oldGroup);
       }
 
-      const targetGroup = this.accountGroups.find(group => group.id === groupId);
+      const targetGroup = this.$store.state.accountGroups.find(group => group.id === groupId);
       targetGroup.accounts.push(account);
 
-      const lastGroup = this.accountGroups[this.accountGroups.length - 1];
+      const lastGroup = this.$store.state.accountGroups[this.$store.state.accountGroups.length - 1];
       if (hasAccounts(lastGroup) || !isTransient(lastGroup)) {
-        this.accountGroups.push(this.createEmptyGroup());
+        this.$store.state.accountGroups.push(this.createEmptyGroup());
       }
 
       // Below we enqueue api calls needed to be made to bring the backend
